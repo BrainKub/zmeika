@@ -17,7 +17,7 @@ struct Point {
     Point(int x_, int y_, Move m_) : x(x_), y(y_), m(m_) {}
 };
 
-int Field_x0 = 0, Field_y0 = 2, Field_x1 = 40, Field_y1 = 20;
+int Field_x0 = 0, Field_y0 = 2, Field_x1 = 30, Field_y1 = 15;
 int Food_x, Food_y, score = 0;
 std::list<Point> snake;
 
@@ -50,16 +50,16 @@ void addPoint() {
     Move m = snake.back().m;
     switch (m) {
         case UP:
-            snake.push_back(Point(x, y + 2, m));
+            snake.push_back(Point(x, y + 1, m));
             break;
         case DOWN:
-            snake.push_back(Point(x, y - 2, m));
+            snake.push_back(Point(x, y - 1, m));
             break;
         case LEFT:
-            snake.push_back(Point(x + 2, y, m));
+            snake.push_back(Point(x + 1, y, m));
             break;
         case RIGHT:
-            snake.push_back(Point(x - 2, y, m));
+            snake.push_back(Point(x - 1, y, m));
             break;
     }
 }
