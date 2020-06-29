@@ -50,16 +50,16 @@ void addPoint() {
     Move m = snake.back().m;
     switch (m) {
         case UP:
-            snake.push_back(Point(x, y + 1, m));
+            snake.push_back(Point(x, y + 2, m));
             break;
         case DOWN:
-            snake.push_back(Point(x, y - 1, m));
+            snake.push_back(Point(x, y - 2, m));
             break;
         case LEFT:
-            snake.push_back(Point(x + 1, y, m));
+            snake.push_back(Point(x + 2, y, m));
             break;
         case RIGHT:
-            snake.push_back(Point(x - 1, y, m));
+            snake.push_back(Point(x - 2, y, m));
             break;
     }
 }
@@ -105,16 +105,20 @@ void newFood() {
 void printSnake() {
     std::list<Point>::iterator it = snake.begin();
     std::list<Point>::iterator end = snake.end();
+    attron(COLOR_PAIR(9));
     for (; it != end; ++it) {
 		mvaddch(it->y, it->x, '0');
     }
     mvaddch(snake.back().y, snake.back().x, '.');
     mvaddch(snake.front().y, snake.front().x, '@');
+    attroff(COLOR_PAIR(9));
+    refresh();
 }
 
 void printRect(int x0, int y0, int x1, int y1) {
     int x = x0;
     int y = y0;
+    attron(COLOR_PAIR(3));
     for (; x <= x1; x++) {
         mvaddch(y, x, '#');
     }
@@ -131,6 +135,8 @@ void printRect(int x0, int y0, int x1, int y1) {
     for (; y > y0; y--) {
         mvaddch(y, x, '|');
     }
+    attroff(COLOR_PAIR(3));
+    refresh();
 }
 
 void render() {
@@ -139,8 +145,12 @@ void render() {
     printRect(0, 0, Field_x1, Field_y0);
     mvprintw(1, 1, "Score %d", score);
     printSnake();
+    attron(COLOR_PAIR(11));
     mvaddch(Food_y, Food_x, 'F');
+    attroff(COLOR_PAIR(11));
+    attron(COLOR_PAIR(3));
     mvaddch(0, 0, '#');
+    attroff(COLOR_PAIR(3));
     refresh();
 }
 
@@ -178,13 +188,26 @@ void initGame() {
 
 int main() {
     initscr();
+    start_color();
+    init_pair(4, COLOR_YELLOW, COLOR_YELLOW);
+    init_pair(5, COLOR_BLUE, COLOR_BLUE);
+    init_pair(6, COLOR_MAGENTA, COLOR_MAGENTA);
+	init_pair(7, COLOR_CYAN, COLOR_CYAN);
+	init_pair(8, COLOR_BLUE, COLOR_BLUE);
+	init_pair(9, COLOR_WHITE, COLOR_WHITE);
+	init_pair(3, COLOR_GREEN, COLOR_GREEN);
+	init_pair(2, COLOR_BLUE, COLOR_BLACK);
+	init_pair(1, COLOR_BLUE, COLOR_BLUE);
+	init_pair(10, COLOR_WHITE, COLOR_BLACK);
+	init_pair(11, COLOR_RED, COLOR_RED);
+	init_pair(12, COLOR_BLACK, COLOR_BLACK);
     keypad(stdscr, TRUE);
     noecho();
     nodelay(stdscr, TRUE);
     srand(time(0));
     initGame();
     Move m = snake.front().m;
-    int wait = 100;
+    int wait = 200;
     int r_sk = rand() % 100;
     wait += r_sk;
     bool running = true;
@@ -219,7 +242,6 @@ int main() {
         render();
         if (checkFieldCoord() || checkSnakeCoord()) {
             int xC = (Field_x0 + 1 + (Field_x1 - (Field_x0 + 1))) / 2 - 4;
-            //mvprintw(0, xC, "GAME OVER");
             running = false;
         }
         flushinp();
@@ -228,13 +250,4 @@ int main() {
 	clear();
 	endwin();
 	return 0;
-    /*int xC = (Field_x0 + 1 + (Field_x1 - (Field_x0 + 1))) / 2 - 10;
-    mvprintw(2, xC, "Press any key to exit");
-    mvaddch(0, 0, '#');
-    refresh();
-    nodelay(stdscr, FALSE);
-    getch();
-    clear();
-    endwin();
-    return 0;*/
 }
